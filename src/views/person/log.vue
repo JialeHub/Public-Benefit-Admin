@@ -17,7 +17,7 @@
             <el-tag>{{ scope.row.time }}ms</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="createTime" label="创建时间">
+        <el-table-column prop="createTime" label="创建时间" sortable>
           <template slot-scope="scope">
             <span>{{ scope.row.createTime | formatDateTime}}</span>
           </template>

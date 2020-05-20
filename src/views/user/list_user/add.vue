@@ -33,7 +33,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="电话" prop="phone" sortable>
+            <el-form-item label="电话" prop="phone">
               <el-input v-model="form.phone"></el-input>
             </el-form-item>
           </el-col>

@@ -9,38 +9,38 @@
           <el-button class="float-right" type="primary" icon="el-icon-plus" @click="add">新增</el-button>
         </div>
         <el-table v-loading="isTableLoading" :data="formData">
-          <el-table-column prop="username" label="用户名"></el-table-column>
-          <el-table-column prop="nickName" label="昵称"></el-table-column>
-          <el-table-column prop="realName" label="真实姓名"></el-table-column>
-          <el-table-column prop="phone" label="电话"></el-table-column>
-          <el-table-column prop="email" label="邮箱"></el-table-column>
-          <el-table-column prop="address" label="地址">
+          <el-table-column prop="username" label="用户名" sortable></el-table-column>
+          <el-table-column prop="nickName" label="昵称" sortable></el-table-column>
+          <el-table-column prop="realName" label="真实姓名" sortable></el-table-column>
+          <el-table-column prop="phone" label="电话" sortable></el-table-column>
+          <el-table-column prop="email" label="邮箱" sortable></el-table-column>
+          <el-table-column prop="address" label="地址" sortable>
             <template slot-scope="scope">
               <span>{{scope.row.province+scope.row.city+scope.row.area+scope.row.address}}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="userAvatar" label="政治面貌"></el-table-column>
-          <el-table-column prop="dept.name" label="所属组织"></el-table-column>
-          <el-table-column prop="sex" label="性别"></el-table-column>
-          <!--<el-table-column label="组织/岗位">
+          <el-table-column prop="politicsStatus" label="政治面貌" sortable></el-table-column>
+          <!--<el-table-column label="政治面貌">
             <template slot-scope="scope">
               {{getDeptNameAndJobName(scope.row)}}
             </template>
           </el-table-column>-->
+          <el-table-column prop="dept.name" sortable label="所属组织"></el-table-column>
+          <el-table-column prop="sex" label="性别" sortable></el-table-column>
           <!--<el-table-column label="状态">
             <template slot-scope="scope">
               <el-tag type="info" v-if="scope.row.enabled">正常</el-tag>
               <el-tag type="danger" v-else>禁用</el-tag>
             </template>
           </el-table-column>-->
-          <el-table-column label="创建时间">
+          <el-table-column label="创建时间" sortable>
             <template slot-scope="scope">
               <span>{{scope.row.createTime | formatDateTime}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" align="center" width="150">
+          <el-table-column label="操作" fixed="right" align="center" width="80">
             <template slot-scope="scope">
-              <el-button type="primary" icon="el-icon-edit" @click.stop="edit(scope.row)"></el-button>
+<!--              <el-button type="primary" icon="el-icon-edit" @click.stop="edit(scope.row)"></el-button>-->
               <delete-button
                       :ref="scope.row.id"
                       :id="scope.row.id"
@@ -90,6 +90,7 @@
   import AddUser from './add'
   import EditUser from './edit'
   import {objectEvaluate, objectExchange} from "@/utils/common";
+  import {TextToCode} from "element-china-area-data";
 
   export default {
     name: "User",
@@ -160,6 +161,16 @@
       },
       edit(obj) {
         let _this = this.$refs.EditUser;
+        obj.selectedOptions=[];
+        if (obj.province && obj.province !== "") {
+          obj.selectedOptions[0] = TextToCode[obj.province].code;
+        }
+        if (obj.city && obj.city !== "") {
+          obj.selectedOptions[1] = TextToCode[obj.province][obj.city].code;
+        }
+        if (obj.area && obj.area !== "") {
+          obj.selectedOptions[2] = TextToCode[obj.province][obj.city][obj.area].code;
+        }
         delete obj.jobId;
         objectEvaluate(_this.form, obj);
         objectExchange(_this.FORM, _this.form);

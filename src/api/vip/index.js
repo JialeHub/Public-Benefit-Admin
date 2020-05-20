@@ -1,6 +1,6 @@
 import {axiosM, axiosG, axiosL, axiosP} from "@/api/request";
 
-const getUserListUrl = "admin/user/pageUser?"; // 获得用户列表
+const getUserListUrl = "admin/list/pageUser?"; // 获得用户列表
 const downloadUserUrl = "userDetail/downloadUser"; // 获得用户列表
 const userCheckUrl = "userDetail/userCheck"; // 获得用户列表
 const updatePriceUrl = "userDetail/updatePrice"; // 修改职位

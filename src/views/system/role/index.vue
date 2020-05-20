@@ -17,9 +17,9 @@
           <el-table-column prop="name" label="名称"></el-table-column>
           <el-table-column prop="dataScope" label="数据权限"></el-table-column>
           <el-table-column prop="permission" label="角色权限"></el-table-column>
-          <el-table-column prop="level" label="角色级别"></el-table-column>
+          <el-table-column prop="level" label="角色级别" sortable></el-table-column>
           <el-table-column prop="remark" label="描述" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column label="创建时间" :show-overflow-tooltip="true">
+          <el-table-column label="创建时间" sortable :show-overflow-tooltip="true">
             <template slot-scope="scope">
               <span>{{scope.row.createTime | formatDateTime}}</span>
             </template>

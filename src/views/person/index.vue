@@ -2,7 +2,8 @@
   <div class="person">
     <el-card class="box-card" style="width: 60%;margin: 0 auto">
       <div slot="header" class="clearfix">
-        <span>个人信息</span>
+<!--        <el-button class="float-right" type="text" style="font-size: 14px;">编辑</el-button>-->
+        <span style="line-height: 32px;">个人信息</span>
       </div>
       <div style="text-align: center; margin-bottom: 20px">
         <avatar-uploader :avatarUrl="avatarUrl"></avatar-uploader>
@@ -13,12 +14,28 @@
           <span>{{user.username}}</span>
         </li>
         <li>
+          <span>昵称</span>
+          <span>{{user.nickName}}</span>
+        </li>
+        <li>
+          <span>政治面貌</span>
+          <span>{{user.politicsStatus}}</span>
+        </li>
+        <li>
+          <span>性别</span>
+          <span>{{user.sex}}</span>
+        </li>
+        <li>
           <span>手机号码</span>
           <span>{{user.phone}}</span>
         </li>
         <li>
           <span>用户邮箱</span>
           <span>{{user.email}}</span>
+        </li>
+        <li>
+          <span>地址</span>
+          <span>{{user.province+user.city+user.area+user.address}}</span>
         </li>
         <li>
           <span>所属部门</span>
@@ -37,6 +54,7 @@
       </ul>
     </el-card>
     <password-dialog ref="PasswordDialog"></password-dialog>
+<!--    <edit-list ref="EditUser" :dept="dept" @update="getUpdate"></edit-list>-->
   </div>
 </template>
 
@@ -44,9 +62,11 @@
   import PasswordDialog from './passwordDialog'
   import PersonalLog from './log'
   import AvatarUploader from '@/components/AvatarUploader'
+  import AddUser from "@/views/system/user/add";
+  import EditUser from "@/views/system/user/edit";
 
   export default {
-    components: {PasswordDialog, PersonalLog, AvatarUploader},
+    components: {PasswordDialog, PersonalLog, AvatarUploader, EditUser},
     name: 'person',
     computed: {
       user() {
@@ -58,6 +78,9 @@
     },
     methods: {
       // 修改密码
+      // getUpdate(){
+      //
+      // },
       changePassword() {
         const _this = this.$refs.PasswordDialog;
         _this.visible = true

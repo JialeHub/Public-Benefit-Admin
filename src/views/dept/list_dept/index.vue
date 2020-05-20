@@ -21,16 +21,20 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="组织名称"></el-table-column>
-        <el-table-column prop="userRealName" label="联系人"></el-table-column>
-        <el-table-column prop="picture" label="组织图片">
+        <el-table-column prop="picture" label="组织图片" width="100">
           <template slot-scope="scope">
             <el-avatar :size="50" :src="$addBaseURL(scope.row.picture)"></el-avatar>
           </template>
         </el-table-column>
+        <el-table-column prop="name" label="组织名称" sortable></el-table-column>
+        <el-table-column prop="userRealName" label="联系人" sortable></el-table-column>
         <el-table-column prop="phone" label="联系电话" sortable></el-table-column>
         <el-table-column prop="email" label="邮箱" sortable></el-table-column>
-        <el-table-column prop="address" label="组织地址"></el-table-column>
+        <el-table-column prop="address" label="组织地址">
+          <template slot-scope="scope">
+            {{scope.row.province+scope.row.city+scope.row.area+scope.row.address}}
+          </template>
+        </el-table-column>
         <el-table-column prop="count" label="人数" sortable></el-table-column>
         <el-table-column prop="foundTime" label="创立时间" sortable>
           <template slot-scope="scope">
@@ -68,7 +72,7 @@
 <script>
   import {getDeptTreeApi, deleteDeptApi} from '@/api/dept'
   import AddDept from './add'
-  import {regionData, CodeToText,TextToCode} from 'element-china-area-data';
+  import {TextToCode} from 'element-china-area-data';
   import {objectEvaluate} from "@/utils/common";
   import EditDept from './edit'
 
