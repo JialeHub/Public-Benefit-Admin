@@ -127,7 +127,7 @@
           phone: {validator: validatePhone, trigger: 'blur'},
           email: {validator: validateEmali, trigger: 'blur'},
           address: {required: true, message: '请输入具体地址', trigger: 'blur'},
-          selectedOptions: {required: true, message: '请选择地区', trigger: 'blur'},
+          selectedOptions: {required: true, message: '请选择地区', trigger: 'change'},
           foundTime: {required: true, message: '请输入内容', trigger: 'blur'},
           picture: {required: true, message: '请上传图片', trigger: 'blur'},
           content: {required: true, message: '请输入内容', trigger: 'blur'},

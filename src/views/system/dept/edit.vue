@@ -48,7 +48,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="人数" prop="count">
-          <el-input-number v-model="form.count" :min="0" label="描述文字"></el-input-number>
+          <el-input-number v-model="form.count" :min="0" label="人数"></el-input-number>
         </el-form-item>
         <el-form-item label="组织图片" prop="picture">
           <add-picture ref="AddFramework" @getImage="getImage" style="padding-top: 10px;"
@@ -113,7 +113,7 @@
           phone: {validator: validatePhone, trigger: 'blur'},
           email: {validator: validateEmali, trigger: 'blur'},
           address: {required: true, message: '请输入具体地址', trigger: 'blur'},
-          selectedOptions: {required: true, message: '请选择地区', trigger: 'blur'},
+          selectedOptions: {required: true, message: '请选择地区', trigger: 'change'},
           foundTime: {required: true, message: '请输入内容', trigger: 'blur'},
           picture: {required: true, message: '请上传图片', trigger: 'blur'},
           content: {required: true, message: '请输入内容', trigger: 'blur'},
@@ -132,8 +132,8 @@
             if (data.selectedOptions.length > 0) data.province = CodeToText[data.selectedOptions[0]];
             if (data.selectedOptions.length > 1) data.city = CodeToText[data.selectedOptions[1]];
             if (data.selectedOptions.length > 2) data.area = CodeToText[data.selectedOptions[2]];
-            data.foundTime=formatDateTime(data.foundTime);
             delete data.selectedOptions;
+            data.foundTime=formatDateTime(data.foundTime);
             this.$refs.SubmitButton.start();
             editDeptApi(data).then(() => {
               this.$refs.SubmitButton.stop();

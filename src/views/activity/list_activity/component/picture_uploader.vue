@@ -53,7 +53,7 @@
   import {uploadPictureApi} from "@/api/file";
 
   export default {
-    name: "ActivityCoverUploaderPlus",
+    name: "ActivityPictureUploaderPlus",
     components: {VueCropper},
     props: {
       imageUrl: {
@@ -118,7 +118,7 @@
         this.$refs.cropper.getCropBlob(data => {
           let formData = new FormData();
           formData.append('file', data, this.fileName);
-          formData.append('typePath', 'activityCover');
+          formData.append('typePath', 'activityPicture');
           this.$refs.SubmitButton.start();
           uploadPictureApi(formData)
             .then(result => {

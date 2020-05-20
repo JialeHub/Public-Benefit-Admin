@@ -6,45 +6,51 @@
                   @keyup.enter.native="getActivityList"/>
         <el-button type="success" class="el-icon-search ml-5" @click="getActivityList">搜索</el-button>
         <el-button class="float-right" type="primary" icon="el-icon-plus" @click="add">新增</el-button>
-        <el-button class="float-right" type="danger" icon="el-icon-delete" @click="deleteMoreActivity">批量删除</el-button>
-        <el-button class="float-right" type="warning" icon="el-icon-download" @click="downloadActivity">导出</el-button>
       </div>
       <div class="">
         <el-table
             v-loading="isTableLoading"
             :data="formData"
-            @selection-change="getSelected"
         >
-          <el-table-column
-              type="selection"
-              width="55">
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="简介">
+                  <span>{{ props.row.content }}</span>
+                </el-form-item>
+              </el-form>
+            </template>
           </el-table-column>
-          <el-table-column prop="title" label="活动名称"></el-table-column>
-          <el-table-column label="活动开始时间" sortable>
+          <el-table-column prop="picture" label="活动图片" width="100">
+            <template slot-scope="scope">
+              <el-avatar :size="50" :src="$addBaseURL(scope.row.picture)"></el-avatar>
+            </template>
+          </el-table-column>
+          <el-table-column prop="deptName" label="发布组织" sortable></el-table-column>
+          <el-table-column prop="name" label="活动名称" sortable></el-table-column>
+          <el-table-column prop="realName" label="联系人" sortable></el-table-column>
+          <el-table-column prop="phone" label="联系方式" sortable></el-table-column>
+          <el-table-column prop="address" label="活动地点">
+            <template slot-scope="scope">
+              {{scope.row.province+scope.row.city+scope.row.area+scope.row.address}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="count" label="已报人数" sortable></el-table-column>
+          <el-table-column label="活动时间" sortable>
             <template slot-scope="scope">
               <span>{{scope.row.beginTime | formatDateTime2}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="活动结束时间" sortable>
+          <el-table-column label="截止时间" sortable>
             <template slot-scope="scope">
               <span>{{scope.row.endTime | formatDateTime2}}</span>
             </template>
           </el-table-column>
-          <!--<el-table-column label="报名开始时间">
+          <el-table-column prop="time" label="服务时长" sortable>
             <template slot-scope="scope">
-              <span>{{scope.row.registerBeginTime | formatDateTime2}}</span><br>
+              <span>{{scope.row.time}} 小时</span>
             </template>
           </el-table-column>
-          <el-table-column label="报名结束时间">
-            <template slot-scope="scope">
-              <span>{{scope.row.registerEndTime | formatDateTime2}}</span>
-            </template>
-          </el-table-column>-->
-          <el-table-column prop="number" label="已报名人数" sortable></el-table-column>
-          <el-table-column prop="maxNumber" label="限报人数" sortable></el-table-column>
-          <el-table-column prop="name" label="负责人"></el-table-column>
-          <el-table-column prop="phone" label="联系方式"></el-table-column>
-          <el-table-column prop="address" label="活动地点"></el-table-column>
           <el-table-column label="操作" fixed="right" align="center" width="150">
             <template slot-scope="scope">
               <el-button type="primary" icon="el-icon-edit" @click="edit(scope.row)"></el-button>
@@ -88,8 +94,6 @@
         searchActivityName: '',
         addFlag: false,
         editFlag: false,
-        isDeleteMoreDisabled: true,
-        deleteList: []
       }
     },
     mounted() {
@@ -103,7 +107,7 @@
       getActivityList() {
         this.isTableLoading = true;
         let pagination = this.$refs.Pagination;
-        let param = `current=${pagination.current}&size=${pagination.size}&title=${this.searchActivityName}&timeState=1`;
+        let param = `current=${pagination.current}&size=${pagination.size}&name=${this.searchActivityName}&timeState=0`;
         pageActivityApi(param).then(result => {
           this.isTableLoading = false;
           let response = result.resultParam.activityPage;
@@ -131,10 +135,6 @@
         //_this.$refs['Editor'].setContent(obj.content);
         //objectEvaluate(_this.form, obj);
       },
-      getSelected(array) {
-        this.deleteList = array.map(item => item.id);
-        this.isDeleteMoreDisabled = array.length === 0;
-      },
       deleteActivity(id) {
         delActivityApi({ids: id})
           .then(() => {
@@ -145,26 +145,6 @@
             this.$refs[id].stop();
           })
       },
-      deleteMoreActivity() {
-        this.$msgBox('确定批量删除操作吗？').then(() => {
-          delActivityApi({ids: [this.deleteList]}).then(() => {
-            this.getActivityList();
-          })
-        })
-      },
-      downloadActivity(){
-        downloadActivityApi().then(result => {
-          let blob = new Blob([result]);
-          let downloadElement = document.createElement('a');
-          let href = window.URL.createObjectURL(blob); //创建下载的链接
-          downloadElement.href = href;
-          downloadElement.download = '活动信息.xls'; //下载后文件名
-          document.body.appendChild(downloadElement);
-          downloadElement.click(); //点击下载
-          document.body.removeChild(downloadElement); //下载完成移除元素
-          window.URL.revokeObjectURL(href); //释放掉blob对象
-        }).catch(error => { })
-      }
     }
   }
 </script>

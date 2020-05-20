@@ -1,6 +1,7 @@
 import Vue from "vue";
 import store from "@/store";
 import {
+  Popconfirm,
   Message,
   MessageBox,
   Notification,
@@ -56,6 +57,8 @@ import {
 
 Vue.prototype.$ELEMENT = {size: store.getters.setting.layoutSize};
 
+Vue.component('ElPopconfirm', Popconfirm);
+Vue.component('ElPopover', Popover);
 Vue.component('ElDatePicker', DatePicker);
 Vue.component('ElButton', Button);
 Vue.component('ElContainer', Container);

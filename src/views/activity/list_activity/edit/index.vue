@@ -89,12 +89,12 @@
             </el-row>
             <el-row>
               <el-col :span="24">
-                <el-form-item label="封面图片" prop="cover">
-                  <img v-show="!editFlag" :src="form.cover===''?'':baseUrl+form.cover" alt="">
-                  <activity-cover-uploader-plus
+                <el-form-item label="封面图片" prop="picture">
+                  <img v-show="!editFlag" :src="form.picture===''?'':baseUrl+form.picture" alt="">
+                  <activity-picture-uploader-plus
                       v-show="editFlag" @getImage="getImage"
-                      :imageUrl="form.cover===''?'':baseUrl+form.cover"
-                      ref="coverUploader"></activity-cover-uploader-plus>
+                      :imageUrl="form.picture===''?'':baseUrl+form.picture"
+                      ref="pictureUploader"></activity-picture-uploader-plus>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -175,7 +175,7 @@
 </template>
 
 <script>
-  import ActivityCoverUploaderPlus from '../component/cover_uploader';
+  import ActivityPictureUploaderPlus from '../component/picture_uploader';
   import CustomEditor from '../component/CustomEditor'
   import {validatePhone} from "@/utils/validate";
   import {
@@ -189,7 +189,7 @@
 
   export default {
     name: "EditOngoingActivity",
-    components: {CustomEditor, ActivityCoverUploaderPlus},
+    components: {CustomEditor, ActivityPictureUploaderPlus},
     props: {},
     data() {
       return {
@@ -214,7 +214,7 @@
           registerBeginTime: '',
           registerEndTime: '',
           content: '',
-          cover: '',
+          picture: '',
           isPrice: false,
           address: '',
           phone: '',
@@ -231,7 +231,7 @@
           registerBeginTime: {message: '请选择报名时间', required: true, trigger: 'change'},
           price: {required: true, message: '请输入价格', trigger: 'blur'},
           phone: {validator: validatePhone, trigger: 'blur'},
-          cover: {required: true, message: '请选择封面图片', trigger: 'blur'}
+          picture: {required: true, message: '请选择封面图片', trigger: 'blur'}
         }
       }
     },
@@ -274,8 +274,8 @@
         })
       },
       getImage(value) {
-        this.form.cover = value;
-        this.$refs.Form.validateField('cover');
+        this.form.picture = value;
+        this.$refs.Form.validateField('picture');
       },
       getActivity() {
         this.isTableLoading2 = true;
@@ -375,7 +375,7 @@
         this.$parent.editFlag = false;
         this.$router.push({name: 'ongoing_activity'});
         Object.assign(this.$data.form, this.$options.data().form);
-        this.$refs['coverUploader'].url = '';
+        this.$refs['pictureUploader'].url = '';
         this.$refs['Form'].resetFields();
         this.$refs.Editor.setContent();
       },
