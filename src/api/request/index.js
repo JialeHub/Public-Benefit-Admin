@@ -16,6 +16,23 @@ export const axiosG = url => {
   });
 };
 
+/**
+ * @param {String} url 请求地址
+ * @param {Object} param
+ * @description get
+ * */
+export const axiosGs = (url, param) => {
+  return new Promise((resolve, reject) => {
+    service({
+      method: "get",
+      url: url,
+      params: param,
+      paramsSerializer: params => qs.stringify(params, {arrayFormat: 'repeat'})
+    })
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+};
 
 /**
  * @param {String} url 请求地址
@@ -32,6 +49,23 @@ export const axiosD = url => {
   });
 };
 
+/**
+ * @param {String} url 请求地址
+ * @param {Object} param
+ * @description delete，删除数据。
+ * */
+export const axiosDs = (url, param) => {
+  return new Promise((resolve, reject) => {
+    service({
+      method: "delete",
+      url: url,
+      params: param,
+      paramsSerializer: params => qs.stringify(params, {arrayFormat: 'repeat'})
+    })
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+};
 
 /**
  * @param {String} url 请求地址
