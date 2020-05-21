@@ -73,16 +73,9 @@
 </template>
 
 <script>
-  import {
-    getActivityApi,
-    delActivityApi,
-    pageActivityApi,
-    downloadActivityApplyApi,
-    downloadActivityApi
-  } from '@/api/activity/activity'
+  import { delActivityApi, pageActivityApi, } from '@/api/activity'
   import AddOngoingActivity from './add/index'
   import EditOngoingActivity from './edit/index'
-  import {objectEvaluate} from "@/utils/common";
 
   export default {
     name: "OngoingActivity",

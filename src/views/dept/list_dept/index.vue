@@ -96,7 +96,7 @@
       getDeptTree() {
         this.isTableLoading = true;
         let pagination = this.$refs.Pagination;
-        getDeptTreeApi(`?pagination=${pagination.current}&size=${pagination.size}&deptName=${this.searchName}`).then(result => {
+        getDeptTreeApi(`current=${pagination.current}&size=${pagination.size}&deptName=${this.searchName}`).then(result => {
           this.isTableLoading = false;
           this.formData = result.resultParam.deptPage.records;
           this.dept = result.resultParam.deptPage.records;

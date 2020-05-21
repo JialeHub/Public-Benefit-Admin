@@ -95,7 +95,7 @@
 <script>
   import ActivityPictureUploaderPlus from '../component/picture_uploader';
   import {validatePhone} from "@/utils/validate";
-  import {addActivityApi} from "@/api/activity/activity";
+  import {addActivityApi} from "@/api/activity";
   import {formatDateTime} from "@/utils/common";
   import CustomEditor from '../component/CustomEditor'
   import {CodeToText, regionData} from "element-china-area-data";

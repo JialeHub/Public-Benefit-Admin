@@ -178,13 +178,7 @@
   import ActivityPictureUploaderPlus from '../component/picture_uploader';
   import CustomEditor from '../component/CustomEditor'
   import {validatePhone} from "@/utils/validate";
-  import {
-    activityApplyCheckApi,
-    delApplyCheckApi,
-    downloadActivityApplyApi, editActivityApi,
-    getActivityApi,
-    pageActivityApplyApi
-  } from "@/api/activity/activity";
+  import {  editActivityApi, getActivityApi, pageActivityApplyApi } from "@/api/activity";
   import {formatDateTime, isEmpty} from "@/utils/common";
 
   export default {

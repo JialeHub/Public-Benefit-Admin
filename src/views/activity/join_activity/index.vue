@@ -1,19 +1,20 @@
 <template>
-  <div id="deptJoin">
+  <div id="activityJoin">
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <el-input placeholder="输入组织名称搜索" v-model="searchName" clearable class="w-200"
-                  @keyup.enter.native="searchDeptJoin"/>
-        <el-button type="success" class="el-icon-search ml-5" @click="searchDeptJoin">搜索</el-button>
+                  @keyup.enter.native="searchActivityJoin"/>
+        <el-button type="success" class="el-icon-search ml-5" @click="searchActivityJoin">搜索</el-button>
       </div>
       <el-table v-loading="isTableLoading"
                 :data="formData"
                 row-key="id"
                 :default-expand-all="false"
                 :tree-props="{children: 'children'}">
-        <el-table-column prop="deptName" label="组织名称" sortable></el-table-column>
-        <el-table-column prop="userDto.nickName" label="昵称" sortable></el-table-column>
+        <el-table-column prop="activityName" label="所属组织" sortable></el-table-column>
         <el-table-column prop="realName" label="姓名" sortable></el-table-column>
+        <el-table-column prop="userDto.nickName" label="昵称" sortable></el-table-column>
+        <el-table-column prop="userDto.nickName" label="活动名称" sortable></el-table-column>
         <el-table-column prop="phone" label="联系电话" sortable></el-table-column>
         <el-table-column prop="userDto.email" label="邮箱" sortable></el-table-column>
         <el-table-column prop="userDto.politicsStatus" label="政治面貌" sortable></el-table-column>
@@ -23,11 +24,11 @@
             {{scope.row.userDto.province+scope.row.userDto.city+scope.row.userDto.area+scope.row.userDto.address}}
           </template>
         </el-table-column>
-        <el-table-column prop="createTime" label="申请时间" sortable>
+        <!--<el-table-column prop="createTime" label="申请时间" sortable>
           <template slot-scope="scope">
             <span>{{scope.row.createTime | formatDateTime2}}</span>
           </template>
-        </el-table-column>
+        </el-table-column>-->
         <!--<el-table-column label="状态">
           <template slot-scope="scope">
             <el-tag type="success" v-if="scope.row.enabled">启用</el-tag>
@@ -75,7 +76,7 @@
 
         </el-table-column>
       </el-table>
-      <pagination ref="Pagination" @getNewData="searchDeptJoin"></pagination>
+      <pagination ref="Pagination" @getNewData="searchActivityJoin"></pagination>
     </el-card>
   </div>
 
@@ -83,25 +84,27 @@
 
 <script>
 
-  import {agreeJoinApi, disagreeJoinApi, pageJoinOrgApi} from "@/api/dept";
+  import {agreeActivityApplyApi, disagreeActivityApplyApi, pageActivityApplyApi} from "@/api/activity";
 
   export default {
-    name: "DeptJoin",
+    name: "ActivityJoin",
     data() {
       return {
         isTableLoading: false,
         formData: [],
-        dept: [],
+        activity: [],
         searchName: ''
       }
     },
     mounted() {
-      this.searchDeptJoin()
+      this.searchActivityJoin()
     },
     methods: {
-      searchDeptJoin() {
+      searchActivityJoin() {
+        this.isTableLoading=true;
         let pagination = this.$refs.Pagination;
-        pageJoinOrgApi(`current=${pagination.current}&size=${pagination.size}&name=${this.searchName}`).then(response => {
+        pageActivityApplyApi(`current=${pagination.current}&size=${pagination.size}&name=${this.searchName}&state=${1}`).then(response => {
+          this.isTableLoading=false;
           let temp = response.resultParam.listPageUtil.list;
           temp.forEach(item => {
             item.delLoading = false;
@@ -110,26 +113,26 @@
           this.formData = temp;
           pagination.total = response.resultParam.listPageUtil.total;
         }).catch(error => {
-          console.log(error);
+          this.isTableLoading=false;
         })
       },
       agreeJoin(row) {
         row.passLoading = true;
-        agreeJoinApi({id: row.id}).then(() => {
-          this.searchDeptJoin();
+        agreeActivityApplyApi({id: row.id}).then(() => {
+          this.searchActivityJoin();
           row.delLoading = false;
         }).catch(error => {
-          this.searchDeptJoin();
+          this.searchActivityJoin();
           row.delLoading = false;
         })
       },
       disagreeJoin(row) {
         row.delLoading = true;
-        disagreeJoinApi({id: row.id}).then(() => {
-          this.searchDeptJoin();
+        disagreeActivityApplyApi({id: row.id}).then(() => {
+          this.searchActivityJoin();
           row.passLoading = true;
         }).catch(error => {
-          this.searchDeptJoin();
+          this.searchActivityJoin();
           row.passLoading = true;
         })
       }
