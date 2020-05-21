@@ -70,9 +70,7 @@
                 <span v-else>通过</span>
               </el-button>
             </el-popconfirm>
-
           </template>
-
         </el-table-column>
       </el-table>
       <pagination ref="Pagination" @getNewData="searchDeptJoin"></pagination>

@@ -1,6 +1,6 @@
 <template>
   <div id="dept">
-    <el-card class="box-card" v-if="!editFlag&&!addFlag">
+    <el-card class="box-card" v-show="!editFlag&&!addFlag">
       <div slot="header" class="clearfix">
         <el-input placeholder="输入组织名称搜索" v-model="searchName" clearable class="w-200"
                   @keyup.enter.native="searchDept"/>

@@ -41,12 +41,6 @@
   export default {
     name: "AddDept",
     components: {addCover},
-    props: {
-      dept: {
-        type: Array,
-        default: []
-      }
-    },
     data() {
       return {
         normalizer(node) {
@@ -58,7 +52,10 @@
           userNickName: '',
           title: '',
           cover: '',
-          content: ''
+          content: '',
+          sort: '',
+          typeId: 0,
+          typeName: '',
         },
         rules: {
           title: {required: true, message: '请输入内容', trigger: 'blur'},

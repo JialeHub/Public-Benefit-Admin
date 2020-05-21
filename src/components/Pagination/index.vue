@@ -1,7 +1,7 @@
 <template>
   <div class="pagination">
     <el-pagination
-            v-if="total > 0"
+            v-if="total > size"
             :page-sizes="page_sizes"
             :page-size="size"
             :layout="layout"

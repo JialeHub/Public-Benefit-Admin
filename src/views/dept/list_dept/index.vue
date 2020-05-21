@@ -1,9 +1,9 @@
 <template>
   <div id="dept">
-    <el-card class="box-card" v-if="!editFlag&&!addFlag">
+    <el-card class="box-card" v-show="!editFlag&&!addFlag">
       <div slot="header" class="clearfix">
-        <el-input placeholder="输入组织名称搜索" v-model="searchName" clearable class="w-200" @keyup.enter.native="getDeptTree"/>
-        <el-button type="success" class="el-icon-search ml-5" @click="getDeptTree">搜索</el-button>
+        <el-input placeholder="输入组织名称搜索" v-model="searchName" clearable class="w-200" @keyup.enter.native="getDeptPage"/>
+        <el-button type="success" class="el-icon-search ml-5" @click="getDeptPage">搜索</el-button>
         <el-button class="float-right" type="primary" icon="el-icon-plus" @click="add">新增</el-button>
       </div>
       <el-table v-loading="isTableLoading"
@@ -61,16 +61,16 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination ref="Pagination" @getNewData="getDeptTree"></pagination>
+      <pagination ref="Pagination" @getNewData="getDeptPage"></pagination>
     </el-card>
-    <add-dept ref="AddDept" :dept="dept" @update="getDeptTree" v-show="!editFlag&&addFlag"/>
-    <edit-dept ref="EditDept" :dept="dept" @update="getDeptTree" v-show="editFlag&&!addFlag"/>
+    <add-dept ref="AddDept" :dept="dept" @update="getDeptPage" v-show="!editFlag&&addFlag"/>
+    <edit-dept ref="EditDept" :dept="dept" @update="getDeptPage" v-show="editFlag&&!addFlag"/>
   </div>
 
 </template>
 
 <script>
-  import {getDeptTreeApi, deleteDeptApi} from '@/api/dept'
+  import {getDeptPageApi, deleteDeptApi} from '@/api/dept'
   import AddDept from './add'
   import {TextToCode} from 'element-china-area-data';
   import {objectEvaluate} from "@/utils/common";
@@ -90,17 +90,17 @@
       }
     },
     mounted() {
-      this.getDeptTree()
+      this.getDeptPage()
     },
     methods: {
-      getDeptTree() {
+      getDeptPage() {
         this.isTableLoading = true;
         let pagination = this.$refs.Pagination;
-        getDeptTreeApi(`current=${pagination.current}&size=${pagination.size}&deptName=${this.searchName}`).then(result => {
+        getDeptPageApi(`current=${pagination.current}&size=${pagination.size}&deptName=${this.searchName}`).then(result => {
           this.isTableLoading = false;
           this.formData = result.resultParam.deptPage.records;
           this.dept = result.resultParam.deptPage.records;
-          pagination.total = result.resultParam.deptPage.count;
+          pagination.total = result.resultParam.deptPage.total;
         })
       },
       add() {
@@ -127,7 +127,7 @@
       deleteDept(id) {
         deleteDeptApi(id)
             .then(() => {
-              this.getDeptTree();
+              this.getDeptPage();
               this.$refs[id].close()
             })
             .catch(() => {

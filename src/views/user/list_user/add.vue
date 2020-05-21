@@ -221,6 +221,7 @@
             this.$refs.SubmitButton.start();
             addUserApi(data).then(() => {
               this.$refs.SubmitButton.stop();
+              this.visible = false;
               this.$emit('update');
               this.cancel()
             }).catch(() => {

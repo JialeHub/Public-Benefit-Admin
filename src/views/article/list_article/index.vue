@@ -1,6 +1,6 @@
 <template>
   <div id="article">
-    <el-card class="box-card" v-if="!editFlag&&!addFlag">
+    <el-card class="box-card" v-show="!editFlag&&!addFlag">
       <div slot="header" class="clearfix">
         <el-input placeholder="输入文章标题搜索" v-model="searchName" clearable class="w-200" @keyup.enter.native="getArticleList"/>
         <el-button type="success" class="el-icon-search ml-5" @click="getArticleList">搜索</el-button>
@@ -26,25 +26,19 @@
             type="selection"
             width="55">
         </el-table-column>
-        <el-table-column prop="picture" label="文章图片" width="100">
+        <el-table-column prop="cover" label="文章图片" width="100">
           <template slot-scope="scope">
-            <el-avatar :size="50" :src="$addBaseURL(scope.row.picture)"></el-avatar>
+            <el-avatar :size="50" :src="$addBaseURL(scope.row.cover)"></el-avatar>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="文章标题" sortable></el-table-column>
-        <el-table-column prop="name" label="发布组织" sortable></el-table-column>
-        <el-table-column prop="userRealName" label="作者" sortable></el-table-column>
-        <el-table-column prop="foundTime" label="发布时间" sortable>
+        <el-table-column prop="title" label="文章标题" sortable></el-table-column>
+        <el-table-column prop="deptName" label="发布组织" sortable></el-table-column>
+        <el-table-column prop="userNickName" label="作者" sortable></el-table-column>
+        <el-table-column prop="updateTime" label="发布时间" sortable>
           <template slot-scope="scope">
-            <span>{{scope.row.foundTime | formatDateTime}}</span>
+            <span>{{scope.row.updateTime | formatDateTime2}}</span>
           </template>
         </el-table-column>
-        <!--<el-table-column label="状态">
-          <template slot-scope="scope">
-            <el-tag type="success" v-if="scope.row.enabled">启用</el-tag>
-            <el-tag type="info" v-else>停用</el-tag>
-          </template>
-        </el-table-column>-->
         <el-table-column label="操作" fixed="right" align="center" width="150">
           <template slot-scope="scope">
             <el-button type="primary" icon="el-icon-edit" @click.stop="edit(scope.row)"></el-button>
@@ -91,11 +85,11 @@
       getArticleList() {
         this.isTableLoading = true;
         let pagination = this.$refs.Pagination;
-        pageArticleApi(`current=${pagination.current}&size=${pagination.size}&title=${this.searchName}`).then(result => {
+        pageArticleApi(`current=${pagination.current}&size=${pagination.size}&title=${this.searchName}&isShow=${1}&typeId=${0}`).then(result => {
           this.isTableLoading = false;
           this.formData = result.resultParam.articlePage.records;
           this.article = result.resultParam.articlePage.records;
-          pagination.total = result.resultParam.articlePage.count;
+          pagination.total = result.resultParam.articlePage.total;
         })
       },
       add() {

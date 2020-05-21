@@ -10,9 +10,9 @@
           <el-form-item label="活动名称" prop="name">
             <el-input v-model="form.name"></el-input>
           </el-form-item>
-          <el-form-item label="发布组织" prop="deptId">
+          <!--<el-form-item label="发布组织" prop="deptId">
             <el-input v-model="form.deptId"></el-input>
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item label="联系人" prop="realName">
             <el-input v-model="form.realName"></el-input>
           </el-form-item>
@@ -110,7 +110,7 @@
         options: regionData,
         selectedOptions: [],
         form: {
-          deptId: '',
+          // deptId: '',
           count: '',
           time: '',
           selectedOptions: [],
