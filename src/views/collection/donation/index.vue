@@ -6,14 +6,14 @@
       <el-button type="success" class="el-icon-search ml-5" @click="pageDonation">搜索</el-button>
     </div>
     <el-table v-loading="isTableLoading" :data="formData">
-      <el-table-column prop="name" label="项目名称"></el-table-column>
-      <el-table-column prop="name" label="姓名"></el-table-column>
-      <el-table-column prop="deptName" label="联系电话"></el-table-column>
-      <el-table-column prop="realName" label="邮箱"></el-table-column>
-      <el-table-column prop="phone" label="居住地址"></el-table-column>
-      <el-table-column prop="priceCount" label="政治面貌"></el-table-column>
-      <el-table-column prop="count" label="所属组织"></el-table-column>
-      <el-table-column prop="count" label="捐款"></el-table-column>
+      <el-table-column prop="projectName" label="项目名称"></el-table-column>
+      <el-table-column prop="realName" label="姓名"></el-table-column>
+      <el-table-column prop="phone" label="联系电话"></el-table-column>
+      <el-table-column prop="" label="邮箱"></el-table-column>
+      <el-table-column prop="" label="居住地址"></el-table-column>
+      <el-table-column prop="" label="政治面貌"></el-table-column>
+      <el-table-column prop="" label="所属组织"></el-table-column>
+      <el-table-column prop="price" label="捐款"></el-table-column>
       <el-table-column prop="createTime" label="捐款时间" width="150px">
         <template slot-scope="scope">
           <span>{{scope.row.createTime | formatDateTime}}</span>
@@ -50,8 +50,8 @@
         };
         pageDonationApi(param).then(result => {
           this.isTableLoading = false;
-          let response = result.resultParam.resultList;
-          this.formData = response;
+          let response = result.resultParam.pageUtil;
+          this.formData = response.list;
           pagination.total = response.total;
         })
       }

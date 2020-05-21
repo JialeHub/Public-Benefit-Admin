@@ -8,7 +8,7 @@
       :http-request="uploadFile"
       :show-file-list="false">
     <img v-if="url" :src="url" class="custom-image" alt="图片"/>
-    <img v-else-if="!url && imageUrl" :src="baseUrl + imageUrl" class="custom-image" alt="图片"/>
+    <img v-else-if="!url && value" :src="baseUrl + value" class="custom-image" alt="图片"/>
     <i v-else class="el-icon-plus image-uploader-icon"></i>
   </el-upload>
 </template>
@@ -19,7 +19,7 @@
   export default {
     name: "ImageUploader",
     props: {
-      imageUrl: {
+      value: {
         type: String,
         default: ""
       }
@@ -60,7 +60,8 @@
         uploadPicturePlusApi(data)
           .then(result => {
             this.isLoading = false;
-            this.$emit("getImage", result.resultParam.uploadFilePath);
+            this.$emit("input", result.resultParam.uploadFilePath);
+            this.$parent.$emit('el.form.change');
             this.url = URL.createObjectURL(file);
           })
           .catch(() => {

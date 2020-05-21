@@ -156,7 +156,7 @@
       cancel() {
         this.visible = false;
         Object.assign(this.$data.form, this.$options.data().form);
-        this.$refs['Form'].resetFields()
+        this.$refs['Form'].clearValidate()
       }
     }
   }

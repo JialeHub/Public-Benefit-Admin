@@ -25,7 +25,7 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="项目图片" prop="picture">
-        <image-uploader ref="ImageUploader" :imageUrl="form.picture" @getImage="getImage"/>
+        <image-uploader ref="ImageUploader" v-model="form.picture"/>
       </el-form-item>
       <el-form-item label="项目内容" prop="content">
         <el-input type="textarea" v-model="form.content"></el-input>
@@ -61,7 +61,7 @@
         },
         rules: {
           name: {required: true, message: '请输入项目名称', trigger: 'blur'},
-          picture: {required: true, message: '请上传项目图片', trigger: 'blur'},
+          picture: {required: true, message: '请上传项目图片', trigger: 'change'},
           realName: {required: true, message: '请输入联系人', trigger: 'blur'},
           phone: {required: true, message: '请输入联系电话', trigger: 'blur'},
           content: {required: true, message: '请输入项目内容', trigger: 'blur'},
@@ -70,10 +70,6 @@
       }
     },
     methods: {
-      getImage(value) {
-        this.form.picture = value;
-        this.$refs['Form'].validateField('picture');
-      },
       submitForm() {
         this.$refs['Form'].validate((valid) => {
           if (valid) {
@@ -97,7 +93,7 @@
       cancel() {
         this.visible = false;
         Object.assign(this.$data.form, this.$options.data().form);
-        this.$refs['Form'].resetFields();
+        this.$refs['Form'].clearValidate();
         this.$refs['ImageUploader'].clearFiles();
       }
     }

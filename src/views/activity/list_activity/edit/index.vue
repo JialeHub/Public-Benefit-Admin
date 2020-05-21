@@ -370,7 +370,7 @@
         this.$router.push({name: 'ongoing_activity'});
         Object.assign(this.$data.form, this.$options.data().form);
         this.$refs['pictureUploader'].url = '';
-        this.$refs['Form'].resetFields();
+        this.$refs['Form'].clearValidate();
         this.$refs.Editor.setContent();
       },
       handleClick(tab, event) {
