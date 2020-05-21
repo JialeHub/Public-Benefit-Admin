@@ -36,6 +36,11 @@
         return process.env.VUE_APP_BASE_API
       }
     },
+    watch: {
+      value(val) {
+        if (!val) this.clearFiles()
+      }
+    },
     methods: {
       /* 自定义上传 */
       uploadFile(param) {
