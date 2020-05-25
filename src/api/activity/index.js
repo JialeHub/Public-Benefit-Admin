@@ -6,7 +6,7 @@ const addActivityUrl = "activity/addActivity"; // 添加活动
 const addActivityApplyUrl = "activity/addActivityApply"; // 添加活动报名
 const delActivityUrl = "activity/delActivity?id="; // 删除活动
 const editActivityUrl = "activity/editActivity"; // 编辑活动
-const getActivityUrl = "activity/getArticle?id="; // 获得活动详情
+const getActivityUrl = "activity/getActivity?id="; // 获得活动详情
 const pageActivityUrl = "activity/pageActivity?"; //分页获得活动列表
 const pageActivityApplyUrl = "activity/pageActivityApply?"; //分页获得活动列表
 const pageUserActivityUrl = "activity/pageUserActivity?"; //分页获得参加过的活动列表
