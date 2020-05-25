@@ -79,7 +79,7 @@ module.exports = {
     proxy: {
       "/api": {
         // 目标:指向网络地址
-        target: "http://192.168.0.121:8081/",
+        target: "http://192.168.0.126:8081/",
         // webpack属性，映射一个host
         changeOrigin: true,
         pathRewrite: {
