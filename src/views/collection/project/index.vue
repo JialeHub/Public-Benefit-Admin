@@ -58,7 +58,7 @@
   import AddProject from './add'
   import EditProject from './edit'
   import {pageProjectApi, delProjectApi} from '../../../api/project'
-  import {objectEvaluate} from "../../../utils/common";
+  import {objectEvaluate} from "@/utils/common";
 
   export default {
     name: "Project",
