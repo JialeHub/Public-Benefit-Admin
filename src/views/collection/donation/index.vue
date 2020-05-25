@@ -9,10 +9,10 @@
       <el-table-column prop="projectName" label="项目名称"></el-table-column>
       <el-table-column prop="realName" label="姓名"></el-table-column>
       <el-table-column prop="phone" label="联系电话"></el-table-column>
-      <el-table-column prop="" label="邮箱"></el-table-column>
-      <el-table-column prop="" label="居住地址"></el-table-column>
-      <el-table-column prop="" label="政治面貌"></el-table-column>
-      <el-table-column prop="" label="所属组织"></el-table-column>
+      <el-table-column prop="userDto.email" label="邮箱"></el-table-column>
+      <el-table-column prop="userDto.address" label="居住地址"></el-table-column>
+      <el-table-column prop="userDto.politicsStatus" label="政治面貌"></el-table-column>
+      <el-table-column prop="deptName" label="所属组织"></el-table-column>
       <el-table-column prop="price" label="捐款"></el-table-column>
       <el-table-column prop="createTime" label="捐款时间" width="150px">
         <template slot-scope="scope">
