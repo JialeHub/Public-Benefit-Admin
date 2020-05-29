@@ -47,11 +47,11 @@
           <el-col :span="12">
             <el-form-item label="所属组织" prop="deptId">
               <tree-select v-model="form.deptId"
+                           :disabled="$storeGet.user.userLevel!==1"
                            :options="dept"
                            :normalizer="normalizer"
                            :default-expand-level="1"
                            sort-value-by="INDEX"
-                           @input="changeDept"
                            placeholder=""/>
             </el-form-item>
           </el-col>
@@ -82,6 +82,31 @@
           </el-col>-->
         </el-row>
         <el-row>
+          <el-col :span="12">
+            <el-form-item label="角色">
+              <el-select v-model="form.rolesId" placeholder="请选择用户角色">
+                <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.level<=$storeGet.user.userLevel"> </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="性别">
+              <el-radio-group v-model="form.sex">
+                <el-radio label="男"></el-radio>
+                <el-radio label="女"></el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <!--<el-col :span="12">
+            <el-form-item label="状态">
+              <el-radio-group v-model="form.enabled">
+                <el-radio :label="true">激活</el-radio>
+                <el-radio :label="false">禁用</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>-->
+        </el-row>
+        <el-row>
           <el-col style="display: flex">
             <el-form-item label="地址" prop="selectedOptions" style="margin-right: 20px;">
               <el-col>
@@ -100,25 +125,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="性别">
-              <el-radio-group v-model="form.sex">
-                <el-radio label="男"></el-radio>
-                <el-radio label="女"></el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <!--<el-col :span="12">
-            <el-form-item label="状态">
-              <el-radio-group v-model="form.enabled">
-                <el-radio :label="true">激活</el-radio>
-                <el-radio :label="false">禁用</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>-->
-        </el-row>
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="visible = false">取 消</el-button>
@@ -131,10 +137,11 @@
 <script>
   import TreeSelect from '@riophae/vue-treeselect'
   import {addUserApi} from '@/api/user'
-  import {getJobByDeptIdApi} from '@/api/job'
+  // import {getJobByDeptIdApi} from '@/api/job'
   import {isEmpty} from "@/utils/common";
   import {validateEmali, validatePhone} from "@/utils/validate";
   import {regionData, CodeToText} from 'element-china-area-data';
+  import {getRoleListApi} from "@/api/role";
 
   export default {
     name: "AddUser",
@@ -144,10 +151,9 @@
         type: Array,
         default: []
       },
-      roleList: {
-        type: Array,
-        default: []
-      }
+    },
+    mounted() {
+      this.getRoleList();
     },
     data() {
       return {
@@ -159,6 +165,7 @@
         visible: false,
         regionData: regionData,
         selectedOptions: [],
+        roleList: [],
         form: {
           address: '',
           selectedOptions: [],
@@ -185,7 +192,7 @@
           nickName: {required: true, message: '请输入内容', trigger: 'blur'},
           password: {required: true, message: '请输入内容', trigger: 'blur'},
           politicsStatus: {required: true, message: '请输入内容', trigger: 'blur'},
-          deptId: {required: true, message: '请选择组织', trigger: 'change'},
+          deptId: {required: false, message: '请选择组织', trigger: 'change'},
           jobId: {required: true, message: '请选择岗位', trigger: 'change'},
           rolesId: {required: true, message: '请选择角色', trigger: 'change'},
           userRealName: {required: true, message: '请输入内容', trigger: 'blur'},
@@ -200,16 +207,22 @@
       }
     },
     methods: {
-      changeDept(value) {
-        if (isEmpty(value)) {
-          this.options = []
-        } else {
-          getJobByDeptIdApi(value).then(result => {
-            this.options = result.resultParam.jobList
-          })
-        }
-        this.form.jobId = null
+      getRoleList(){
+        getRoleListApi('').then(result => {
+          this.roleList = result.resultParam.roleList;
+          if (this.$storeGet.user.userLevel!==1) this.form.deptId=this.$storeGet.user.deptId;
+        })
       },
+      // changeDept(value) {
+      //   if (isEmpty(value)) {
+      //     this.options = []
+      //   } else {
+      //     getJobByDeptIdApi(value).then(result => {
+      //       this.options = result.resultParam.jobList
+      //     })
+      //   }
+      //   this.form.jobId = null
+      // },
       submitForm() {
         this.$refs['Form'].validate((valid) => {
           if (valid) {
@@ -222,7 +235,6 @@
             addUserApi(data).then(() => {
               this.$refs.SubmitButton.stop();
               this.visible = false;
-              this.$emit('update');
               this.cancel()
             }).catch(() => {
               this.$refs.SubmitButton.stop();
@@ -233,6 +245,7 @@
         });
       },
       cancel() {
+        this.$emit('update');
         this.visible = false;
         Object.assign(this.$data.form, this.$options.data().form);
         this.$refs['Form'].clearValidate()

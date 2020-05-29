@@ -23,16 +23,17 @@
           </template>
         </el-table-column>
         <el-table-column
+            :selectable="(row,index)=>{return ($storeGet.user.userLevel===1 || $storeGet.user.deptId===row.deptId)}"
             type="selection"
             width="55">
         </el-table-column>
-        <el-table-column prop="cover" label="文章图片" width="100">
+        <el-table-column prop="picture" label="项目图片" width="120">
           <template slot-scope="scope">
-            <el-avatar :size="50" :src="$addBaseURL(scope.row.cover)"></el-avatar>
+            <img :src="$addBaseURL(scope.row.cover)" width="100px" alt="">
           </template>
         </el-table-column>
-        <el-table-column prop="title" label="文章标题" sortable></el-table-column>
         <el-table-column prop="deptName" label="发布组织" sortable></el-table-column>
+        <el-table-column prop="title" label="文章标题" sortable></el-table-column>
         <el-table-column prop="userNickName" label="作者" sortable></el-table-column>
         <el-table-column prop="updateTime" label="发布时间" sortable>
           <template slot-scope="scope">
@@ -41,8 +42,8 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" align="center" width="150">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" @click.stop="edit(scope.row)"></el-button>
-            <delete-button
+            <el-button type="primary" icon="el-icon-edit" @click.stop="edit(scope.row)" :disabled="!($storeGet.user.userLevel===1 || $storeGet.user.deptId===scope.row.deptId)"></el-button>
+            <delete-button :disabled="!($storeGet.user.userLevel===1 || $storeGet.user.deptId===scope.row.deptId)"
                 :ref="scope.row.id"
                 :id="scope.row.id"
                 @start="deleteArticle"/>

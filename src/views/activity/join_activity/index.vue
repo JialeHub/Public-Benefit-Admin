@@ -2,7 +2,12 @@
   <div id="activityJoin">
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <el-input placeholder="输入组织名称搜索" v-model="searchName" clearable class="w-200"
+        <el-select v-model="state" placeholder="请选择审核状态" @change="searchActivityJoin">
+          <el-option label="待审核" value="1"></el-option>
+          <el-option label="已拒绝" value="0"></el-option>
+          <el-option label="已通过" value="2"></el-option>
+        </el-select>
+        <el-input placeholder="输入昵称搜索" v-model="searchName" clearable class="w-200" style="margin-left: 10px;"
                   @keyup.enter.native="searchActivityJoin"/>
         <el-button type="success" class="el-icon-search ml-5" @click="searchActivityJoin">搜索</el-button>
       </div>
@@ -11,11 +16,11 @@
                 row-key="id"
                 :default-expand-all="false"
                 :tree-props="{children: 'children'}">
-        <el-table-column prop="activityName" label="所属组织" sortable></el-table-column>
+<!--        <el-table-column prop="deptName" label="发布组织" sortable></el-table-column>-->
         <el-table-column prop="realName" label="姓名" sortable></el-table-column>
-        <el-table-column prop="userDto.nickName" label="昵称" sortable></el-table-column>
-        <el-table-column prop="userDto.nickName" label="活动名称" sortable></el-table-column>
+        <el-table-column prop="activityName" label="活动名称" sortable></el-table-column>
         <el-table-column prop="phone" label="联系电话" sortable></el-table-column>
+        <el-table-column prop="userDto.nickName" label="昵称" sortable></el-table-column>
         <el-table-column prop="userDto.email" label="邮箱" sortable></el-table-column>
         <el-table-column prop="userDto.politicsStatus" label="政治面貌" sortable></el-table-column>
         <el-table-column prop="userDto.sex" label="性别" sortable></el-table-column>
@@ -35,15 +40,15 @@
             <el-tag type="info" v-else>停用</el-tag>
           </template>
         </el-table-column>-->
-        <el-table-column label="操作" fixed="right" align="center" width="200">
+        <el-table-column label="操作" align="center" width="200" header-align="center">
           <template slot-scope="scope">
-
             <el-popconfirm
                 title="确认拒绝并删除此条审核？"
                 iconColor="red"
                 @onConfirm="disagreeJoin(scope.row)"
             >
               <el-button
+                  :disabled="state==='0'"
                   class="float-right ml-5 mb-10"
                   :ref="'del_'+scope.row.id"
                   type="danger"
@@ -51,7 +56,8 @@
                   :loading="scope.row.delLoading"
                   slot="reference"
               >
-                <span> 拒绝 </span>
+                <span v-if="state==='0'">已</span>
+                <span>拒绝</span>
               </el-button>
             </el-popconfirm>
             <el-popconfirm
@@ -59,16 +65,16 @@
                 @onConfirm="agreeJoin(scope.row)"
             >
               <el-button
+                  :disabled="state==='2'"
                   :ref="'pass_'+scope.row.id"
                   class="float-right mb-10"
                   type="success"
                   icon="el-icon-check"
                   :loading="scope.row.passLoading"
-                  :disabled="scope.row.updateId && scope.row.updateId===1"
                   slot="reference"
               >
-                <span v-if="scope.row.updateId && scope.row.updateId===1">已通过</span>
-                <span v-else>通过</span>
+                <span v-if="state==='2'">已</span>
+                <span>通过</span>
               </el-button>
             </el-popconfirm>
 
@@ -90,6 +96,7 @@
     name: "ActivityJoin",
     data() {
       return {
+        state: '1',
         isTableLoading: false,
         formData: [],
         activity: [],
@@ -103,7 +110,7 @@
       searchActivityJoin() {
         this.isTableLoading=true;
         let pagination = this.$refs.Pagination;
-        pageActivityApplyApi(`current=${pagination.current}&size=${pagination.size}&name=${this.searchName}&state=${1}`).then(response => {
+        pageActivityApplyApi(`current=${pagination.current}&size=${pagination.size}&name=${this.searchName}&state=${this.state}`).then(response => {
           this.isTableLoading=false;
           let temp = response.resultParam.listPageUtil.list;
           temp.forEach(item => {

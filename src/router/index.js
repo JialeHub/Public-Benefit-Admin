@@ -7,6 +7,7 @@ import {getMenuApi} from '../api/menu'
 import {getUserInfoApi} from '../api/person'
 import {title} from '../settings'
 import {TraverseTree} from './TraverseTree'
+import {getUserLevelApi} from "@/api/user";
 
 NProgress.configure({showSpinner: false});
 
@@ -47,8 +48,13 @@ let layout = {
 export function generateRouter() {
   return new Promise(resolve => {
     getUserInfoApi().then(result => {
-      store.dispatch('setUser', result.resultParam.user)
+      let userInfo=result.resultParam.userDto;
+      getUserLevelApi().then(result => {
+        userInfo.userLevel=result.resultParam.level;
+        store.dispatch('setUser', userInfo);
+      })
     });
+
     getMenuApi().then(result => {
       let menu = result.resultParam.content;
       layout = new TraverseTree(menu, layout).get();

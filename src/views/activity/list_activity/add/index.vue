@@ -19,6 +19,15 @@
           <el-form-item label="联系方式" prop="phone">
             <el-input v-model="form.phone"></el-input>
           </el-form-item>
+          <el-form-item label="活动时间" prop="ActivityTime">
+            <el-date-picker
+                v-model="form.ActivityTime"
+                type="datetimerange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+            </el-date-picker>
+          </el-form-item>
           <el-row style="display: flex">
             <el-form-item label="活动地址" prop="selectedOptions" style="flex: 0 1 300px;margin-right: 20px;">
               <el-col>
@@ -36,16 +45,7 @@
               </el-col>
             </el-form-item>
           </el-row>
-          <el-form-item label="活动时间" prop="ActivityTime">
-            <el-date-picker
-                v-model="form.ActivityTime"
-                type="datetimerange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item label="报名时间" prop="RegisterTime">
+          <!--<el-form-item label="报名时间" prop="RegisterTime">
             <el-date-picker
                 v-model="form.RegisterTime"
                 type="datetimerange"
@@ -53,13 +53,22 @@
                 start-placeholder="开始日期"
                 end-placeholder="结束日期">
             </el-date-picker>
-          </el-form-item>
-          <el-form-item label="已报人数" prop="count">
+          </el-form-item>-->
+          <!--<el-form-item label="已报人数" prop="count">
             <el-input-number v-model="form.count" :min="0" label="已报人数"></el-input-number>
+          </el-form-item>-->
+          <el-form-item label="活动类型" prop="activityTypeId">
+            <el-select v-model="form.activityTypeId" placeholder="请选择">
+              <el-option label="青少年服务" value="1"> </el-option>
+              <el-option label="敬老助残" value="2"> </el-option>
+              <el-option label="环境保护" value="3"> </el-option>
+              <el-option label="便民服务" value="4"> </el-option>
+              <el-option label="其他" value="5"> </el-option>
+            </el-select>
           </el-form-item>
-          <el-form-item label="服务时长" prop="time">
-            <el-input-number v-model="form.time" :min="0" label="服务时长"></el-input-number>
-          </el-form-item>
+          <!--<el-form-item label="服务时长" prop="time">
+            <el-input-number v-model="form.time" :min="0" label="服务时长" :precision="2" :step="0.25"></el-input-number>
+          </el-form-item>-->
         </el-col>
       </el-row>
       <el-row>
@@ -111,16 +120,18 @@
         selectedOptions: [],
         form: {
           // deptId: '',
-          count: '',
+          //count: '',
+          activityTypeId: '',
+          activityTypeName: '',
           time: '',
           selectedOptions: [],
           ActivityTime: [],
-          RegisterTime: [],
+          // RegisterTime: [],
           name: '',
           beginTime: '',
           endTime: '',
-          registerBeginTime: '',
-          registerEndTime: '',
+          // registerBeginTime: '',
+          // registerEndTime: '',
           content: '',
           picture: '',
           address: '',
@@ -128,6 +139,7 @@
           realName: ''
         },
         rules: {
+          activityTypeId: {required: true, message: '请选择活动类型', trigger: 'change'},
           selectedOptions: {required: true, message: '请选择地区', trigger: 'change'},
           count: {required: true, message: '请选择已报人数', trigger: 'blur'},
           time: {required: true, message: '请选择服务时长', trigger: 'blur'},
@@ -149,10 +161,10 @@
         this.form.beginTime = formatDateTime(v[0]);
         this.form.endTime = formatDateTime(v[1]);
       },
-      'form.RegisterTime'(v) {
-        this.form.registerBeginTime = formatDateTime(v[0]);
-        this.form.registerEndTime = formatDateTime(v[1]);
-      },
+      // 'form.RegisterTime'(v) {
+      //   this.form.registerBeginTime = formatDateTime(v[0]);
+      //   this.form.registerEndTime = formatDateTime(v[1]);
+      // },
       'form.isPrice'(v) {
         if (!v) this.form.ownPrice = this.form.groupPrice = 0;
       },
@@ -174,7 +186,6 @@
             delete data.RegisterTime;
             addActivityApi(data).then(() => {
               this.$refs.SubmitButton.stop();
-              this.$emit('update');
               this.cancel()
             }).catch(() => {
               this.$refs.SubmitButton.stop();
@@ -189,6 +200,7 @@
         this.$refs.Form.validateField('picture');
       },
       cancel() {
+        this.$emit('update');
         this.$parent.addFlag = false;
         Object.assign(this.$data.form, this.$options.data().form);
         this.$refs['pictureUploader'].url = '';

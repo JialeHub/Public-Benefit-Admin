@@ -75,7 +75,7 @@
           canScale: false, // 图片是否允许滚轮缩放
           fixedBox: false, // 固定截图框大小 不允许改变
           fixed: true, // 是否开启截图框宽高固定比例
-          fixedNumber: [1, 1], // 截图框的宽高比例
+          fixedNumber: [16, 9], // 截图框的宽高比例
           autoCrop: true, // 是否默认生成截图框
           full: false, // 是否输出原图比例的截图
           canMoveBox: true, // 截图框能否拖动
@@ -153,8 +153,8 @@
 </script>
 
 <style lang="scss">
-  $image-uploader-plus-width: 170px;
-  $image-uploader-plus-height: 170px;
+  $image-uploader-plus-width: 320px;
+  $image-uploader-plus-height: 180px;
 
   .cropper {
     width: 100%;

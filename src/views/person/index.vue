@@ -6,7 +6,7 @@
         <span style="line-height: 32px;">个人信息</span>
       </div>
       <div style="text-align: center; margin-bottom: 20px">
-        <avatar-uploader :avatarUrl="avatarUrl"></avatar-uploader>
+        <avatar-uploader :avatarUrl="$addBaseURL(user.avatar)"></avatar-uploader>
       </div>
       <ul class="personInfo">
         <li>
@@ -36,11 +36,11 @@
         <li>
           <span>地址</span>
           <span>{{user.province+user.city+user.area+user.address}}</span>
-        </li>
+        </li><!--
         <li>
-          <span>所属部门</span>
-          <span>{{user.dept}}</span>
-        </li>
+          <span>所属组织</span>
+          <span>{{user.dept.name}}</span>
+        </li>-->
         <li>
           <span>创建日期</span>
           <span>{{user.createTime | formatDate}}</span>
@@ -62,7 +62,6 @@
   import PasswordDialog from './passwordDialog'
   import PersonalLog from './log'
   import AvatarUploader from '@/components/AvatarUploader'
-  import AddUser from "@/views/system/user/add";
   import EditUser from "@/views/system/user/edit";
 
   export default {
@@ -72,9 +71,6 @@
       user() {
         return this.$storeGet.user
       },
-      avatarUrl() {
-        return process.env.VUE_APP_BASE_API + this.user.avatar
-      }
     },
     methods: {
       // 修改密码

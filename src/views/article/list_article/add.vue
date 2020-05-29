@@ -77,7 +77,6 @@
             this.$refs.SubmitButton.start();
             addArticleApi(data).then(() => {
               this.$refs.SubmitButton.stop();
-              this.$emit('update');
               this.cancel()
             }).catch(() => {
               this.$refs.SubmitButton.stop();
@@ -88,6 +87,7 @@
         });
       },
       cancel() {
+        this.$emit('update');
         this.$parent.addFlag = false;
         Object.assign(this.$data.form, this.$options.data().form);
         this.$refs['Form'].clearValidate()

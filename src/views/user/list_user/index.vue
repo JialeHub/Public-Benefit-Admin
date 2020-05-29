@@ -1,7 +1,7 @@
 <template>
   <div id="user">
     <el-row :gutter="20">
-      <el-col :sm="24" :md="4" class="mb-15" v-show="true">
+      <!--<el-col :sm="24" :md="4" class="mb-15" v-show="true">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <el-input
@@ -27,16 +27,26 @@
             </el-tree>
           </div>
         </el-card>
-      </el-col>
-      <el-col :sm="24" :md="20" class="mb-15">
+      </el-col>-->
+      <el-col :sm="24" :md="24" class="mb-15">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
-            <el-input placeholder="输入用户名搜索" v-model="searchUsername" clearable class="w-200"
+            <el-select v-model="searchDeptId" @change="searchUserList" filterable remote reserve-keyword placeholder="输入组织名称搜索" :remote-method="remoteMethod" :loading="deptTreeloading" v-if="$storeGet.user.userLevel===1">
+              <el-option label="全部组织" value=""> </el-option>
+              <el-option
+                  v-for="item in deptTree"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.value">
+              </el-option>
+            </el-select>
+            <el-input placeholder="输入用户名搜索" v-model="searchUsername" clearable class="w-200" style="margin-left: 10px;"
                       @keyup.enter.native="searchUserList"/>
             <el-button type="success" class="el-icon-search ml-5" @click="searchUserList">搜索</el-button>
             <el-button class="float-right" type="primary" icon="el-icon-plus" @click="add">新增</el-button>
           </div>
           <el-table v-loading="isTableLoading" :data="formData">
+            <el-table-column prop="roles[0].name" label="角色" ></el-table-column>
             <el-table-column prop="dept.name" label="所属组织" sortable></el-table-column>
             <el-table-column prop="username" label="用户名" sortable></el-table-column>
             <el-table-column prop="nickName" label="昵称" sortable></el-table-column>
@@ -66,10 +76,11 @@
                 <span>{{scope.row.createTime | formatDateTime}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="操作" fixed="right" align="center" width="80">
+            <el-table-column label="操作" fixed="right" align="center" width="160">
               <template slot-scope="scope">
-                <!--              <el-button type="primary" icon="el-icon-edit" @click.stop="edit(scope.row)"></el-button>-->
+                <el-button type="primary" icon="el-icon-edit" @click="edit(scope.row)" :disabled="!($storeGet.user.userLevel === 1 || (scope.row.roles[0].level>=$storeGet.user.userLevel )) "></el-button>
                 <delete-button
+                    :disabled="!(scope.row.id!==$storeGet.user.id && ($storeGet.user.userLevel === 1 || (scope.row.roles[0].level>=$storeGet.user.userLevel && (scope.row.dept && scope.row.dept.id === $storeGet.user.deptId)))) "
                     :ref="scope.row.id"
                     :id="scope.row.id"
                     @start="deleteUser"/>
@@ -101,6 +112,7 @@
       return {
         searchUsername: '',
         searchDeptId: '',
+        deptTreeloading: false,
         formData: [],
         isTableLoading: false,
         dept: [],
@@ -113,14 +125,22 @@
       }
     },
     mounted() {
-      this.getUserList();
       this.getDeptTree();
+      this.getUserList();
       this.getRoleList()
     },
     methods: {
       getRoleList() {
         getRoleListApi('').then(result => {
           this.roleList = result.resultParam.roleList;
+
+        })
+      },
+      remoteMethod(query){
+        this.deptTreeloading=true;
+        getDeptTreeApi(query).then(result => {
+          this.deptTreeloading=false;
+          this.deptTree = result.resultParam.deptTree
         })
       },
       getDeptTree() {
@@ -135,7 +155,6 @@
         })
       },
       searchUserList() {
-        this.searchDeptId = "";
         this.getUserList();
       },
       searchByDeptId(obj) {
@@ -145,6 +164,7 @@
       getUserList() {
         this.isTableLoading = true;
         let pagination = this.$refs.Pagination;
+        if (this.$storeGet.user.userLevel!==1) this.searchDeptId=this.$storeGet.user.deptId;
         let param = `current=${pagination.current}&size=${pagination.size}&deptId=${this.searchDeptId}&username=${this.searchUsername}`;
         getUserListApi(param).then(result => {
           this.isTableLoading = false;
@@ -175,8 +195,9 @@
         }
         delete obj.jobId;
         objectEvaluate(_this.form, obj);
-        objectExchange(_this.FORM, _this.form);
-        _this.initDept(obj.deptId);
+        // objectExchange(_this.FORM, _this.form);
+        // _this.initDept(obj.deptId);
+
         _this.visible = true
       },
       deleteUser(id) {

@@ -16,7 +16,7 @@ export const agreeActivityApplyApi = data => axiosP(agreeActivityApplyUrl, data)
 export const disagreeActivityApplyApi = data => axiosP(disagreeActivityApplyUrl, data);
 export const addActivityApi = data => axiosK(addActivityUrl, data);
 export const addActivityApplyApi = data => axiosK(addActivityApplyUrl, data);
-export const delActivityApi = data => axiosM(delActivityUrl , data, 'delete');
+export const delActivityApi = data => axiosD(delActivityUrl+data);
 export const editActivityApi = data => axiosP(editActivityUrl, data);
 export const getActivityApi = data => axiosG(getActivityUrl + data);
 export const pageActivityApi = data => axiosG(pageActivityUrl + data);

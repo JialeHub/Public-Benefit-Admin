@@ -2,7 +2,16 @@
   <div class="">
     <el-card v-show="!addFlag&&!editFlag" class="box-card">
       <div slot="header" class="clearfix">
-        <el-input placeholder="输入活动名称搜索" v-model="searchActivityName" clearable class="w-200"
+        <el-select v-model="searchDeptId" @change="getActivityList" filterable remote reserve-keyword placeholder="输入组织名称搜索" :remote-method="remoteMethod" :loading="deptTreeloading" v-if="$storeGet.user.userLevel===1">
+          <el-option label="全部组织" value=""> </el-option>
+          <el-option
+              v-for="item in deptTree"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+          </el-option>
+        </el-select>
+        <el-input placeholder="输入活动名称搜索" v-model="searchActivityName" clearable class="w-200" style="margin-left: 10px;"
                   @keyup.enter.native="getActivityList"/>
         <el-button type="success" class="el-icon-search ml-5" @click="getActivityList">搜索</el-button>
         <el-button class="float-right" type="primary" icon="el-icon-plus" @click="add">新增</el-button>
@@ -21,9 +30,9 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column prop="picture" label="活动图片" width="100">
+          <el-table-column prop="picture" label="活动图片" width="120">
             <template slot-scope="scope">
-              <el-avatar :size="50" :src="$addBaseURL(scope.row.picture)"></el-avatar>
+              <img :src="$addBaseURL(scope.row.picture)" height="50px" alt="">
             </template>
           </el-table-column>
           <el-table-column prop="deptName" label="发布组织" sortable></el-table-column>
@@ -66,8 +75,8 @@
     </el-card>
     <add-ongoing-activity v-show="addFlag&&!editFlag" ref="AddOngoingActivity"
                           @update="getActivityList"></add-ongoing-activity>
-    <edit-ongoing-activity v-show="!addFlag&&editFlag" ref="EditOngoingActivity"
-                           @update="getActivityList"></edit-ongoing-activity>
+    <edit-activity v-show="!addFlag&&editFlag" ref="EditActivity"
+                           @update="getActivityList"></edit-activity>
   </div>
 
 </template>
@@ -75,13 +84,17 @@
 <script>
   import { delActivityApi, pageActivityApi, } from '@/api/activity'
   import AddOngoingActivity from './add/index'
-  import EditOngoingActivity from './edit/index'
+  import EditActivity from './edit/index'
+  import {getDeptTreeApi} from "@/api/dept";
 
   export default {
     name: "OngoingActivity",
-    components: {EditOngoingActivity, AddOngoingActivity},
+    components: {EditActivity, AddOngoingActivity},
     data() {
       return {
+        deptTreeloading: false,
+        deptTree: [],
+        searchDeptId: '',
         isTableLoading: false,
         formData: [],
         searchActivityName: '',
@@ -92,15 +105,26 @@
     mounted() {
       if (this.$route.query.id) {
         this.edit({id: this.$route.query.id})
+        this.$refs.EditActivity.getActivity();
       } else {
         this.getActivityList();
       }
+      this.getDeptTree();
     },
     methods: {
       getActivityList() {
         this.isTableLoading = true;
         let pagination = this.$refs.Pagination;
-        let param = `current=${pagination.current}&size=${pagination.size}&name=${this.searchActivityName}&timeState=0`;
+        let param;
+        if (this.$storeGet.user.userLevel!==1) {
+          param = `current=${pagination.current}&size=${pagination.size}&name=${this.searchActivityName}&deptId=${this.$storeGet.user.deptId}&timeState=1`
+        }else{
+          if (this.searchDeptId!==''){
+            param = `current=${pagination.current}&size=${pagination.size}&name=${this.searchActivityName}&timeState=1&deptId=${this.searchDeptId}`;
+          }else{
+            param = `current=${pagination.current}&size=${pagination.size}&name=${this.searchActivityName}&timeState=1`;
+          }
+        }
         pageActivityApi(param).then(result => {
           this.isTableLoading = false;
           let response = result.resultParam.activityPage;
@@ -113,23 +137,34 @@
         _this.visible = true*/
         this.addFlag = true;
         this.editFlag = false;
-
       },
       edit(obj) {
-        /*let _this = this.$refs.EditOngoingActivity;
+        /*let _this = this.$refs.EditActivity;
         objectEvaluate(_this.form, obj);
         _this.visible = true*/
         this.addFlag = false;
         this.editFlag = true;
-        this.$router.push({name: "ongoing_activity", query: {id: obj.id}});
-        let _this = this.$refs.EditOngoingActivity;
-        _this.editFlag = false;
+        this.$router.push({name: "list_activity", query: {id: obj.id}});
+        let _this = this.$refs.EditActivity;
         _this.getActivity();
         //_this.$refs['Editor'].setContent(obj.content);
         //objectEvaluate(_this.form, obj);
       },
+      remoteMethod(query){
+        this.deptTreeloading=true;
+        getDeptTreeApi(query).then(result => {
+          this.deptTreeloading=false;
+          this.deptTree = result.resultParam.deptTree
+        })
+      },
+      getDeptTree() {
+        getDeptTreeApi("").then(result => {
+          this.dept = result.resultParam.deptTree;
+          this.deptTree = result.resultParam.deptTree
+        })
+      },
       deleteActivity(id) {
-        delActivityApi({ids: id})
+        delActivityApi(id)
           .then(() => {
             this.getActivityList();
             this.$refs[id].close()

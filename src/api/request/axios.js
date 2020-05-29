@@ -29,9 +29,13 @@ service.interceptors.request.use(
 // 响应拦截
 service.interceptors.response.use(
   response => {
-    const {message, status} = response.data;
+    const {message, resultParam, status} = response.data;
     if (!isEmpty(message) && status === 200) successMsg(message);
-    if (!isEmpty(message) && status !== 200) errorMsg(message);
+    if (!isEmpty(resultParam) && !isEmpty(resultParam.reason)) {
+      errorMsg(resultParam.reason);
+    } else {
+      if (!isEmpty(message) && status !== 200) errorMsg(message);
+    }
     return response.data;
   },
   error => {

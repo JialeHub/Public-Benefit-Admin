@@ -26,11 +26,11 @@ module.exports = {
   /**
    * @description 底部文字
    */
-  footerTxt: '© 2020 Wang YePeng Wteam.All rights reserved',
+  footerTxt: 'LAPW',
   /**
    * @description 备案号
    */
-  caseNumber: '粤ICP备23001351号',
+  caseNumber: '',
   /**
    * @description 菜单是否夜晚模式
    */

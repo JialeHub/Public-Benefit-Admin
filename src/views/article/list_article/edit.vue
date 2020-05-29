@@ -88,6 +88,7 @@
         });
       },
       cancel() {
+        this.$emit('update');
         this.$parent.editFlag = false;
         Object.assign(this.$data.form, this.$options.data().form);
         this.$refs['Form'].clearValidate()

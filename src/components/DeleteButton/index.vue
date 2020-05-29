@@ -13,9 +13,9 @@
               @click.stop="deleteData()">确定
       </el-button>
     </div>
-    <el-button v-if="type==='button'" slot="reference" type="danger"
+    <el-button v-if="type==='button'" slot="reference" type="danger" :disabled="disabled"
                icon="el-icon-delete" class="delete-button" @click.stop/>
-    <el-button v-if="type==='text'" slot="reference" type="text"
+    <el-button v-if="type==='text'" slot="reference" type="text" :disabled="disabled"
                class="delete-button" @click.stop>{{text}}
     </el-button>
   </el-popover>
@@ -41,6 +41,10 @@
       text: {
         type: String,
         default: ''
+      },
+      disabled: {
+        type: Boolean,
+        default: false
       }
     },
     data() {

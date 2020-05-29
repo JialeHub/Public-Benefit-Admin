@@ -16,7 +16,7 @@
             <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon"/>
           </el-input>
         </el-form-item>
-        <el-form-item prop="code">
+        <!--<el-form-item prop="code">
           <el-input v-model="form.code" auto-complete="off" placeholder="验证码" style="width: 63%"
                     @keyup.enter.native="submitForm">
             <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon"/>
@@ -24,7 +24,7 @@
           <div class="login-code">
             <img :src="codeUrl" @click="getCode" alt="验证码">
           </div>
-        </el-form-item>
+        </el-form-item>-->
         <el-checkbox v-model="isRememberMe" style="margin:0 0 25px 0;">
           记住我
         </el-checkbox>
@@ -49,6 +49,7 @@
   import {encrypt} from '../utils/encrypt'
   import {generateRouter} from "../router";
   import {footerTxt, caseNumber, title} from '../settings'
+  import {getUserLevelApi} from "@/api/user";
 
   export default {
     name: "Login",
@@ -60,7 +61,7 @@
         form: {
           username: '',
           password: '',
-          code: '',
+          //code: '',
           uuid: ''
         },
         rules: {

@@ -4,7 +4,7 @@
       <div slot="header" class="clearfix">
         <el-input placeholder="输入组织名称搜索" v-model="searchName" clearable class="w-200" @keyup.enter.native="getDeptPage"/>
         <el-button type="success" class="el-icon-search ml-5" @click="getDeptPage">搜索</el-button>
-        <el-button class="float-right" type="primary" icon="el-icon-plus" @click="add">新增</el-button>
+        <el-button class="float-right" type="primary" icon="el-icon-plus" @click="add" :disabled="$storeGet.user.userLevel!==1">新增</el-button>
       </div>
       <el-table v-loading="isTableLoading"
                 :data="formData"
@@ -20,9 +20,9 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column prop="picture" label="组织图片" width="100">
+        <el-table-column prop="picture" label="项目图片" width="120">
           <template slot-scope="scope">
-            <el-avatar :size="50" :src="$addBaseURL(scope.row.picture)"></el-avatar>
+            <img :src="$addBaseURL(scope.row.picture)" width="100px" alt="">
           </template>
         </el-table-column>
         <el-table-column prop="name" label="组织名称" sortable></el-table-column>
@@ -53,8 +53,8 @@
         </el-table-column>-->
         <el-table-column label="操作" fixed="right" align="center" width="150">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" @click.stop="edit(scope.row)"></el-button>
-            <delete-button
+            <el-button type="primary" icon="el-icon-edit" @click.stop="edit(scope.row)" :disabled="!($storeGet.user.userLevel===1 || $storeGet.user.deptId===scope.row.id)"></el-button>
+            <delete-button :disabled="!($storeGet.user.userLevel===1 || $storeGet.user.deptId===scope.row.id)"
                 :ref="scope.row.id"
                 :id="scope.row.id"
                 @start="deleteDept"/>

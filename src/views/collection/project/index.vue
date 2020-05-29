@@ -1,7 +1,16 @@
 <template>
   <el-card class="box-card project">
     <div slot="header" class="clearfix">
-      <el-input placeholder="输入组织名称搜索" v-model="searchName" clearable class="w-200"
+      <el-select v-model="searchDeptId" @change="pageProject" filterable remote reserve-keyword placeholder="输入组织名称搜索" :remote-method="remoteMethod" :loading="deptTreeloading" v-if="$storeGet.user.userLevel===1">
+        <el-option label="全部组织" value=""> </el-option>
+        <el-option
+            v-for="item in deptTree"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+        </el-option>
+      </el-select>
+      <el-input placeholder="输入项目名称搜索" v-model="searchName" clearable class="w-200" style="margin-left: 10px;"
                 @keyup.enter.native="pageProject"/>
       <el-button type="success" class="el-icon-search ml-5" @click="pageProject">搜索</el-button>
       <el-button class="float-right" type="primary" icon="el-icon-plus" @click="add">新增</el-button>
@@ -22,9 +31,9 @@
       </el-table-column>
       <el-table-column prop="name" label="项目名称"></el-table-column>
       <el-table-column prop="deptName" label="发布组织"></el-table-column>
-      <el-table-column prop="picture" label="项目图片">
+      <el-table-column prop="picture" label="项目图片" width="120">
         <template slot-scope="scope">
-          <el-avatar :size="50" :src="$addBaseURL(scope.row.picture)"></el-avatar>
+          <img :src="$addBaseURL(scope.row.picture)" width="100px" alt="">
         </template>
       </el-table-column>
       <el-table-column prop="realName" label="联系人"></el-table-column>
@@ -59,19 +68,24 @@
   import EditProject from './edit'
   import {pageProjectApi, delProjectApi} from '../../../api/project'
   import {objectEvaluate} from "@/utils/common";
+  import {getDeptTreeApi} from "@/api/dept";
 
   export default {
     name: "Project",
     components: {AddProject, EditProject},
     data() {
       return {
+        deptTreeloading: false,
+        deptTree: [],
+        searchDeptId: '',
         isTableLoading: false,
         formData: [],
         searchName: ''
       }
     },
     mounted() {
-      this.pageProject()
+      this.getDeptTree();
+      this.pageProject();
     },
     methods: {
       pageProject() {
@@ -82,6 +96,12 @@
           size: pagination.size,
           name: this.searchName
         };
+        if (this.$storeGet.user.userLevel!==1) {
+          param.deptId = this.$storeGet.user.deptId;
+        }else{
+          param.deptId = this.searchDeptId;
+          if (param.deptId==='') delete param.deptId;
+        }
         pageProjectApi(param).then(result => {
           this.isTableLoading = false;
           let response = result.resultParam.projectPage;
@@ -100,6 +120,19 @@
         time[0] = new Date(obj.beginTime);
         time[1] = new Date(obj.endTime);
         _this.form.time = time;
+      },
+      remoteMethod(query){
+        this.deptTreeloading=true;
+        getDeptTreeApi(query).then(result => {
+          this.deptTreeloading=false;
+          this.deptTree = result.resultParam.deptTree
+        })
+      },
+      getDeptTree() {
+        getDeptTreeApi("").then(result => {
+          this.dept = result.resultParam.deptTree;
+          this.deptTree = result.resultParam.deptTree
+        })
       },
       delProject(id) {
         delProjectApi({id: id})

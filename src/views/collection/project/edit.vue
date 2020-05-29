@@ -5,7 +5,7 @@
       @close="cancel"
       :close-on-click-modal="false"
       :visible.sync="visible">
-    <el-form :model="form" :rules="rules" ref="Form" label-width="80px">
+    <el-form :model="form" :rules="rules" ref="Form" label-width="80px" hide-required-asterisk>
       <el-form-item label="项目名称" prop="name">
         <el-input v-model="form.name"></el-input>
       </el-form-item>
@@ -42,6 +42,7 @@
   import {editProjectApi} from '../../../api/project'
   import {formatDateTime} from "../../../utils/common";
   import ImageUploader from './ImageUploader';
+  import {validatePhone} from "@/utils/validate";
 
   export default {
     name: "EditProject",
@@ -64,7 +65,7 @@
           name: {required: true, message: '请输入项目名称', trigger: 'blur'},
           picture: {required: true, message: '请上传项目图片', trigger: 'change'},
           realName: {required: true, message: '请输入联系人', trigger: 'blur'},
-          phone: {required: true, message: '请输入联系电话', trigger: 'blur'},
+          phone: {validator: validatePhone, trigger: 'blur'},
           content: {required: true, message: '请输入项目内容', trigger: 'blur'},
           time: {required: true, message: '请选择捐款时间', trigger: 'change'}
         }
@@ -81,7 +82,6 @@
             this.$refs.SubmitButton.start();
             editProjectApi(data).then(() => {
               this.$refs.SubmitButton.stop();
-              this.$emit('update');
               this.cancel()
             }).catch(() => {
               this.$refs.SubmitButton.stop();
@@ -92,6 +92,7 @@
         });
       },
       cancel() {
+        this.$emit('update');
         this.visible = false;
         Object.assign(this.$data.form, this.$options.data().form);
         this.$refs['Form'].clearValidate();

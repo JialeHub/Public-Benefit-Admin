@@ -52,8 +52,9 @@
 
 <script>
   import {VueCropper} from 'vue-cropper'
-  import {editAvatarApi} from "@/api/user";
+  import {editAvatarApi, getUserLevelApi} from "@/api/user";
   import {getUserInfoApi} from "@/api/person"
+  import store from "@/store";
 
   export default {
     name: 'AvatarUploader',
@@ -121,10 +122,13 @@
             .then(() => {
               this.$refs.SubmitButton.stop();
               this.closeUpload();
-              return getUserInfoApi()
-            })
-            .then(result => {
-              this.$storeSet('setUser', result.resultParam.user);
+              getUserInfoApi().then(result => {
+                let userInfo=result.resultParam.userDto;
+                getUserLevelApi().then(result => {
+                  userInfo.userLevel=result.resultParam.level;
+                  store.dispatch('setUser', userInfo);
+                })
+              });
             })
             .catch(() => {
               this.$refs.SubmitButton.stop();

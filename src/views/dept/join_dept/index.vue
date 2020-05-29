@@ -107,8 +107,7 @@
           });
           this.formData = temp;
           pagination.total = response.resultParam.listPageUtil.total;
-        }).catch(error => {
-          console.log(error);
+        }).catch(() => {
         })
       },
       agreeJoin(row) {
