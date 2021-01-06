@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@riophae/vue-treeselect": "0.4.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "core-js": "^3.4.4",
     "e-vue-contextmenu": "^0.1.3",
     "element-china-area-data": "^4.1.2",
